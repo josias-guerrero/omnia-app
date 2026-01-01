@@ -1,13 +1,11 @@
-
 import Link from 'next/link'
 
 const Sidebar = () => {
   const links = [
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Productos', href: '/dashboard/products' },
+    { name: 'Atributos', href: '/dashboard/attributes' },
     { name: 'Ventas', href: '/dashboard/sales' },
-    { name: 'Reportes', href: '/dashboard/reports' },
-    { name: 'Configuración', href: '/dashboard/settings' },
   ]
 
   return (

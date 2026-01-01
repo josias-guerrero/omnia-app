@@ -1,15 +1,17 @@
-import { useForm, Controller } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, useEffect } from 'react'
+import Card from '@/components/ui/formFields/Card'
 import { useBrandStore } from '@/modules/brands/store.brands'
-import { useProductStore } from '../store'
 import { useCategoryStore } from '@/modules/categories/store.categories'
-import Input from '@/components/ui/Input'
-import Select from '@/components/ui/Select'
-import { ProductFormData, productSchema } from '../schemas/product.schema'
 import { usePropertyStore } from '@/modules/properties/store.properties'
-import Button from '@/components/ui/Button'
-import Card from '@/components/ui/Card'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { ProductFormData, productSchema } from '../schemas/product.schema'
+import { useProductStore } from '../store'
+import Button from '@/components/ui/formFields/Button'
+import FieldError from '@/components/ui/formFields/FieldError'
+import Input from '@/components/ui/formFields/Input'
+import Select from '@/components/ui/formFields/Select'
+import FieldLabel from '@/components/ui/formFields/FieldLabel'
 
 export function ProductForm() {
   const addProduct = useProductStore((s) => s.addProduct)
@@ -85,36 +87,30 @@ export function ProductForm() {
             <h3 className='mb-4 text-lg font-medium text-gray-900'>Información General</h3>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
               <div className='md:col-span-2'>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>
-                  Nombre del Producto
-                </label>
-                <Input placeholder='Ej. Camiseta Algodón' {...register('name')} />
-                {errors.name && (
-                  <span className='mt-1 text-sm text-red-500'>{errors.name.message}</span>
-                )}
+                <FieldLabel htmlFor='name'>Nombre del Producto</FieldLabel>
+                <Input placeholder='Ej. Camiseta Algodón' id='name' {...register('name')} />
+                {errors.name && <FieldError>{errors.name.message}</FieldError>}
               </div>
 
               <div>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>SKU</label>
-                <Input placeholder='SKU-12345' {...register('sku')} />
-                {errors.sku && (
-                  <span className='mt-1 text-sm text-red-500'>{errors.sku.message}</span>
-                )}
+                <FieldLabel htmlFor='sku'>SKU</FieldLabel>
+                <Input id='sku' placeholder='SKU-12345' {...register('sku')} />
+                {errors.sku && <FieldError>{errors.sku.message}</FieldError>}
               </div>
 
               <div>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>
-                  Código de barras
-                </label>
-                <Input placeholder='0000000000' {...register('barcode')} />
-                {errors.barcode && (
-                  <span className='mt-1 text-sm text-red-500'>{errors.barcode.message}</span>
-                )}
+                <FieldLabel htmlFor='barcode'>Código de barras</FieldLabel>
+                <Input id='barcode' placeholder='0000000000' {...register('barcode')} />
+                {errors.barcode && <FieldError>{errors.barcode.message}</FieldError>}
               </div>
 
               <div className='md:col-span-2'>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>Descripción</label>
-                <Input placeholder='Descripción detallada...' {...register('description')} />
+                <FieldLabel htmlFor='description'>Descripción</FieldLabel>
+                <Input
+                  id='description'
+                  placeholder='Descripción detallada...'
+                  {...register('description')}
+                />
               </div>
             </div>
           </section>
@@ -126,10 +122,11 @@ export function ProductForm() {
             <h3 className='mb-4 text-lg font-medium text-gray-900'>Inventario y Precios</h3>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
               <div>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>Costo</label>
+                <FieldLabel htmlFor='cost'>Costo</FieldLabel>
                 <div className='relative'>
                   <span className='absolute left-3 top-2 text-gray-500'>$</span>
                   <Input
+                    id='cost'
                     className='pl-7'
                     type='number'
                     step='0.01'
@@ -139,12 +136,11 @@ export function ProductForm() {
               </div>
 
               <div>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>
-                  Precio de Venta
-                </label>
+                <FieldLabel htmlFor='price'>Precio de Venta</FieldLabel>
                 <div className='relative'>
                   <span className='absolute left-3 top-2 text-gray-500'>$</span>
                   <Input
+                    id='price'
                     className='pl-7'
                     type='number'
                     step='0.01'
@@ -154,10 +150,8 @@ export function ProductForm() {
               </div>
 
               <div>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>
-                  Stock Inicial
-                </label>
-                <Input type='number' {...register('stock', { valueAsNumber: true })} />
+                <FieldLabel htmlFor='stock'>Stock Inicial</FieldLabel>
+                <Input id='stock' type='number' {...register('stock', { valueAsNumber: true })} />
               </div>
             </div>
           </section>
@@ -169,8 +163,8 @@ export function ProductForm() {
             <h3 className='mb-4 text-lg font-medium text-gray-900'>Clasificación</h3>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
               <div>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>Marca</label>
-                <Select {...register('brandId', { valueAsNumber: true })}>
+                <FieldLabel htmlFor='brand'>Marca</FieldLabel>
+                <Select id='brand' {...register('brandId', { valueAsNumber: true })}>
                   {brands.map((b) => (
                     <option key={b.id} value={b.id}>
                       {b.name}
@@ -180,7 +174,7 @@ export function ProductForm() {
               </div>
 
               <div>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>Categorías</label>
+                <FieldLabel>Categorías</FieldLabel>
                 <Controller
                   control={control}
                   name='categoryIds'
@@ -207,9 +201,7 @@ export function ProductForm() {
                 <p className='mt-1 text-xs text-gray-500'>
                   Mantén presionado Ctrl (Windows) o Cmd (Mac) para seleccionar múltiples.
                 </p>
-                {errors.categoryIds && (
-                  <span className='mt-1 text-sm text-red-500'>{errors.categoryIds?.message}</span>
-                )}
+                {errors.categoryIds && <FieldError>{errors.categoryIds?.message}</FieldError>}
               </div>
             </div>
           </section>
