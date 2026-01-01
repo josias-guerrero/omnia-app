@@ -1,7 +1,10 @@
 'use client'
 
 import { useProductStore } from '@/modules/products/store'
+import { ProductList } from '@/modules/products/components/ProductList'
 import { useEffect } from 'react'
+import Link from 'next/link'
+import Button from '@/components/ui/Button'
 
 export default function Page() {
   const { products, fetchProducts, loading } = useProductStore()
@@ -10,18 +13,19 @@ export default function Page() {
     fetchProducts()
   }, [fetchProducts])
 
-  if (loading) return <p>Cargando...</p>
-
   return (
-    <div>
-      <h1>Productos</h1>
-      <ul>
-        {products.map((p) => (
-          <li key={p.id}>
-            {p.name} - {p.price}
-          </li>
-        ))}
-      </ul>
+    <div className='mx-auto max-w-6xl'>
+      <div className='mb-6 flex items-center justify-between'>
+        <div>
+          <h1 className='text-2xl font-bold text-gray-900'>Productos</h1>
+          <p className='text-sm text-gray-500'>Administra tu inventario y precios.</p>
+        </div>
+        <Link href='/dashboard/products/new'>
+           <Button>+ Nuevo Producto</Button>
+        </Link>
+      </div>
+
+      <ProductList products={products} loading={loading} />
     </div>
   )
 }

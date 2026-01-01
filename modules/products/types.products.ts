@@ -1,3 +1,7 @@
+import { Brand } from '../brands/types.brands'
+import { Category } from '../categories/types.categories'
+import { Property } from '../properties/types.properties'
+
 export interface Product {
   id: string
   sku: string
@@ -9,9 +13,7 @@ export interface Product {
   updatedAt: Date
   name: string
   stock: number
-  brand?: {
-    id: number
-    name: string
-  }
-  properties?: Record<string, string>
+  brand?: Partial<Brand>
+  properties?: Partial<Property>
+  categories?: Partial<Category>
 }
