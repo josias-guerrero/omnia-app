@@ -3,13 +3,15 @@
 import { useEffect } from 'react'
 import { useBrandStore } from '../store.brands'
 import DataTable from '@/components/ui/DataTable'
-import EditableBrandName from './EditableBrandName'
+import DeleteActionButton from '@/components/ui/actionButtons/DeleteActionButton'
+import { EditableField } from '@/components/ui/formFields/EditableField'
 
 const BrandList = () => {
   const brandList = useBrandStore((s) => s.brands)
   const fetchBrands = useBrandStore((s) => s.fetchBrands)
   const loading = useBrandStore((s) => s.loading)
   const deleteBrand = useBrandStore((s) => s.deleteBrand)
+  const saveBrand = useBrandStore((s) => s.updateBrand)
 
   useEffect(() => {
     fetchBrands()
@@ -24,18 +26,19 @@ const BrandList = () => {
           id: 'name',
           key: 'name',
           header: 'Marca',
-          render: (brand) => <EditableBrandName brand={brand} />,
+          render: (brand) => (
+            <EditableField
+              item={brand}
+              onSave={(newName, brand) => saveBrand(brand.id, { name: newName })}
+              value={brand.name}
+            />
+          ),
         },
         {
           id: 'actions',
           header: 'Acciones',
           render: (brand) => (
-            <button
-              onClick={() => deleteBrand(brand.id)}
-              className='text-red-600 hover:text-red-900'
-            >
-              Eliminar
-            </button>
+            <DeleteActionButton item={brand} onDelete={deleteBrand}></DeleteActionButton>
           ),
         },
       ]}

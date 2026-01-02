@@ -41,7 +41,7 @@ function DataTable<T extends { id: string | number }>({
     <div className='overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm'>
       <div className='overflow-x-auto'>
         <table className='min-w-full divide-y divide-gray-200 text-left text-sm'>
-          <thead className='bg-gray-50 text-gray-500'>
+          <thead className='bg-gray-50 text-gray-900'>
             <tr>
               {columns.map((col) => (
                 <th key={col.id} className={`px-6 py-3 font-medium ${col.className ?? ''}`}>
@@ -54,7 +54,7 @@ function DataTable<T extends { id: string | number }>({
             {data.map((item) => (
               <tr key={item.id}>
                 {columns.map((col) => (
-                  <td key={col.id} className='px-6 py-4'>
+                  <td key={col.id} className='px-6 py-4 text-gray-500'>
                     {col.render ? col.render(item) : col.key ? String(item[col.key]) : null}
                   </td>
                 ))}

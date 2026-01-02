@@ -19,5 +19,9 @@ export async function apiFetch<T>({ endpoint, options }: FetchProps): Promise<T>
     throw new Error(await res.text())
   }
 
+  if (res.status === 204) {
+    return undefined as T
+  }
+
   return res.json()
 }
