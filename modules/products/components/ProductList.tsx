@@ -1,17 +1,36 @@
-import DataTable from '@/components/ui/DataTable'
-import { Product } from '@/modules/products/types.products'
+'use client'
+
+import PaginatedDataTable from '@/components/ui/PaginatedDataTable'
 import Link from 'next/link'
+import { useProductStore } from '../store'
+import { useEffect } from 'react'
 
-interface ProductListProps {
-  products: Product[]
-  loading?: boolean
-}
+export function ProductList() {
+  const fetchPage = useProductStore((e) => e.fetchProducts)
+  const page = useProductStore((e) => e.productsPage)
+  const loading = useProductStore((e) => e.loading)
+  const setPage = useProductStore((e) => e.setPage)
+  const setSize = useProductStore((e) => e.setSize)
 
-export function ProductList({ products, loading }: ProductListProps) {
+  useEffect(() => {
+    fetchPage()
+  }, [fetchPage])
+
+  if (!page) {
+    return (
+      <div className='flex items-center justify-center p-8'>
+        <div className='h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-500'></div>
+      </div>
+    )
+  }
+
   return (
-    <DataTable
-      data={products}
+    <PaginatedDataTable
+      page={page}
+      emptyMessage='No hay productos que mostrar'
       loading={loading}
+      onPageChange={setPage}
+      onSizeChange={setSize}
       columns={[
         { id: 'sku', key: 'sku', header: 'SKU' },
         { id: 'name', key: 'name', header: 'Producto' },

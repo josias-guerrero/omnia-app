@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-interface Column<T> {
+export interface Column<T> {
   id: string
   key?: keyof T
   header: string

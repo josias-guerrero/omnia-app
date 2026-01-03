@@ -1,18 +1,8 @@
-'use client'
-
-import { useProductStore } from '@/modules/products/store'
 import { ProductList } from '@/modules/products/components/ProductList'
-import { useEffect } from 'react'
 import Link from 'next/link'
 import Button from '@/components/ui/formFields/Button'
 
 export default function Page() {
-  const { products, fetchProducts, loading } = useProductStore()
-
-  useEffect(() => {
-    fetchProducts()
-  }, [fetchProducts])
-
   return (
     <div className='mx-auto max-w-6xl'>
       <div className='mb-6 flex items-center justify-between'>
@@ -25,7 +15,7 @@ export default function Page() {
         </Link>
       </div>
 
-      <ProductList products={products} loading={loading} />
+      <ProductList />
     </div>
   )
 }
