@@ -1,3 +1,4 @@
+'use client'
 import Card from '@/components/ui/formFields/Card'
 import { useBrandStore } from '@/modules/brands/store.brands'
 import { useCategoryStore } from '@/modules/categories/store.categories'
@@ -13,8 +14,15 @@ import Input from '@/components/ui/formFields/Input'
 import Select from '@/components/ui/formFields/Select'
 import FieldLabel from '@/components/ui/formFields/FieldLabel'
 
-export function ProductForm() {
+type ProductFormProps = {
+  productId?: string
+}
+
+export function ProductForm({ productId }: ProductFormProps) {
   const addProduct = useProductStore((s) => s.addProduct)
+  const updateProduct = useProductStore((s) => s.updateProduct)
+  const fetchProductById = useProductStore((s) => s.fetchProductById)
+
   const fetchBrands = useBrandStore((s) => s.fetchBrands)
   const brands = useBrandStore((s) => s.brands)
 
@@ -24,25 +32,57 @@ export function ProductForm() {
   const fetchCategories = useCategoryStore((s) => s.fetchCategories)
   const categories = useCategoryStore((s) => s.categories)
 
-  useEffect(() => {
-    fetchBrands()
-    fetchCategories()
-    fetchProperties()
-  }, [fetchBrands, fetchCategories, fetchProperties])
+  const isEditMode = Boolean(productId)
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
     control,
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
   })
 
-  // 🔹 Estado local para propiedades dinámicas
   const [properties, setProperties] = useState<
     { selected: string; customName?: string; value: string }[]
   >([])
+
+  useEffect(() => {
+    fetchBrands()
+    fetchCategories()
+    fetchProperties()
+  }, [fetchBrands, fetchCategories, fetchProperties])
+
+  // 🔹 Cargar producto si es edición
+  useEffect(() => {
+    if (!productId) return
+
+    const loadProduct = async () => {
+      const product = await fetchProductById(productId)
+
+      reset({
+        name: product.name,
+        sku: product.sku,
+        barcode: product.barcode ? product.barcode : undefined,
+        description: product.description,
+        cost: product.cost,
+        price: product.price,
+        stock: product.stock,
+        brandId: product.brand?.id,
+        categoryIds: product.categories?.map((c) => c.id),
+      })
+
+      const propsArray = Object.entries(product.properties ?? {}).map(([key, value]) => ({
+        selected: key,
+        value,
+      }))
+
+      setProperties(propsArray)
+    }
+
+    loadProduct()
+  }, [productId, fetchProductById, reset])
 
   const addPropertyField = () => {
     setProperties([...properties, { selected: '', value: '' }])
@@ -60,6 +100,7 @@ export function ProductForm() {
 
   const onSubmit = async (data: ProductFormData) => {
     const propsRecord: Record<string, string> = {}
+
     properties.forEach((p) => {
       let name = p.selected
       if (name === '__new__' && p.customName) {
@@ -70,13 +111,18 @@ export function ProductForm() {
       }
     })
 
-    await addProduct({ ...data, properties: propsRecord })
+    if (isEditMode && productId) {
+      await updateProduct(productId, { ...data, properties: propsRecord })
+    } else {
+      await addProduct({ ...data, properties: propsRecord })
+    }
   }
-
   return (
     <div className='mx-auto max-w-4xl p-6'>
       <div className='mb-6'>
-        <h1 className='text-2xl font-bold text-gray-900'>Nuevo Producto</h1>
+        <h1 className='text-2xl font-bold text-gray-900'>
+          {isEditMode ? 'Editar Producto' : 'Nuevo Producto'}
+        </h1>
         <p className='text-sm text-gray-500'>Complete la información para registrar un producto.</p>
       </div>
 

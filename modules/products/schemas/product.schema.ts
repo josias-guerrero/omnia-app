@@ -12,7 +12,7 @@ export const productSchema = z.object({
   barcode: z
     .string()
     .max(50)
-    .transform((val) => (val === '' ? undefined : val))
+    .transform((val) => (val === '' || val === null ? undefined : val))
     .optional()
     .refine((val) => val === undefined || /^[0-9]{8,14}$/.test(val), {
       message: 'El código debe tener entre 8 y 14 dígitos',

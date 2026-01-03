@@ -36,12 +36,46 @@ export function ProductList({ products, loading }: ProductListProps) {
           ),
         },
         {
+          id: 'categories',
+          key: 'categories',
+          header: 'Categorías',
+          render: (p) => {
+            if (!p.categories || p.categories.length === 0) return '-'
+
+            const names = p.categories.map((c) => c.name)
+            const visible = names.slice(0, 2)
+            const extra = names.length - visible.length
+
+            return (
+              <span className='text-sm'>
+                {visible.join(', ')}
+                {extra > 0 && <span className='ml-1 text-gray-400'>+{extra}</span>}
+              </span>
+            )
+          },
+        },
+        {
+          id: 'properties',
+          key: 'properties',
+          header: 'Props',
+          className: 'text-center',
+
+          render: (p) =>
+            p.properties && Object.keys(p.properties).length > 0 ? (
+              <span className='inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs'>
+                {Object.keys(p.properties).length}
+              </span>
+            ) : (
+              '-'
+            ),
+        },
+        {
           id: 'actions',
           header: 'Acciones',
           render: (p) => (
             <Link
               href={`/dashboard/products/${p.id}`}
-              className='text-blue-600 hover:text-blue-900'
+              className=' text-blue-600 hover:text-blue-900'
             >
               Editar
             </Link>
