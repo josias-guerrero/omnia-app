@@ -16,4 +16,9 @@ export const ProductApi = {
       endpoint: `/api/v1/products/${id}`,
       options: { method: 'PUT', body: JSON.stringify(data) },
     }),
+  delete: (id: string) =>
+    apiFetch<void>({
+      endpoint: `/api/v1/products/${id}`,
+      options: { method: 'DELETE' },
+    }),
 }

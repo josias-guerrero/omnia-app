@@ -4,6 +4,7 @@ import PaginatedDataTable from '@/components/ui/PaginatedDataTable'
 import Link from 'next/link'
 import { useProductStore } from '../store'
 import { useEffect } from 'react'
+import DeleteActionButton from '@/components/ui/actionButtons/DeleteActionButton'
 
 export function ProductList() {
   const fetchPage = useProductStore((e) => e.fetchProducts)
@@ -11,6 +12,7 @@ export function ProductList() {
   const loading = useProductStore((e) => e.loading)
   const setPage = useProductStore((e) => e.setPage)
   const setSize = useProductStore((e) => e.setSize)
+  const deleteProduct = useProductStore((e) => e.deleteProduct)
 
   useEffect(() => {
     fetchPage()
@@ -92,12 +94,15 @@ export function ProductList() {
           id: 'actions',
           header: 'Acciones',
           render: (p) => (
-            <Link
-              href={`/dashboard/products/${p.id}`}
-              className=' text-blue-600 hover:text-blue-900'
-            >
-              Editar
-            </Link>
+            <div className='flex gap-2'>
+              <Link
+                href={`/dashboard/products/${p.id}`}
+                className=' text-blue-600 hover:text-blue-900'
+              >
+                Editar
+              </Link>
+              <DeleteActionButton item={p} onDelete={deleteProduct}></DeleteActionButton>
+            </div>
           ),
           className: 'text-right',
         },

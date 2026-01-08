@@ -16,6 +16,7 @@ interface ProductState {
   addProduct: (product: Partial<Product>) => Promise<void>
   fetchProductById: (id: string) => Promise<Product>
   updateProduct: (id: string, product: Partial<Product>) => Promise<void>
+  deleteProduct: (id: string) => Promise<void>
 
   //helpers
   getProductById: (id: string) => Product | undefined
@@ -106,5 +107,10 @@ export const useProductStore = create<ProductState>((set, get) => ({
   refreshCurrentPage: async () => {
     const { currentPage, currentSize } = get()
     await get().fetchProducts(currentPage, currentSize)
+  },
+
+  deleteProduct: async (id) => {
+    await ProductApi.delete(id)
+    await get().refreshCurrentPage()
   },
 }))
